@@ -62,13 +62,18 @@ class NewBookPage:
 
         self.root.destroy()
 
-    def edit(self, bookId, callBack):
+    def __deleteBook(self, bookId):
+        self.db.deleteBook(bookId)
+
+    def edit(self, bookId):
         book = self.db.getBookById(bookId)
         self.bookNameVar.set(book[1])
         self.bookAuthorVar.set(book[2])
         self.bookPriceVar.set(book[3])
         self.bookQuantityVar.set(book[4])
 
-        self.sumbit.config(text="edit",command=lambda: self.__registerBook(book[0]))
-        self.sumbit.grid(row=5,column=0,columnspan=1)
-        ttk.Button(self.root, text="delete").grid(row=5, column=1,sticky='e',columnspan=1)
+        self.sumbit.config(text="edit", command=lambda: self.__registerBook(book[0]))
+        self.sumbit.grid(row=5, column=0, columnspan=1)
+
+        ttk.Button(self.root, text="delete", command=lambda: self.__deleteBook(book[0])).grid(row=5, column=1,
+                                                                                              sticky='e', columnspan=1)

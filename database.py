@@ -195,6 +195,6 @@ class Database:
         self.__execute_query("INSERT INTO books VALUES (NULL,?,?,?,?)",
                              (book.title, book.author, book.price, book.quantity))
 
-    def deleteBook(self,bookId):
+    def deleteBook(self, bookId):
         query = "DELETE FROM books WHERE id =?"
-        return self.__execute_query(query,bookId)
+        return self.__execute_query(query, (bookId,))

@@ -1,8 +1,8 @@
+import time
 from tkinter import *
 import tkinter.ttk as ttk
 # from database import Database
 import newBookPage
-import test
 import database
 
 
@@ -12,51 +12,33 @@ class Report:
         # self.root.geometry('500x500')
         self.db = db
 
-        # self.initGui()
-        self.initGui2()
+        self.initGui()
 
         self.getAllBooks()
 
-    def initGui(self):
-        self.root.title("new book")
-        self.root.configure(padx=20, pady=20)
-
-        self.searchEntry = ttk.Entry(self.root, justify="right")
-        self.searchEntry.pack(fill="x")
-        self.searchEntry.bind('<KeyRelease>', self.searchBook)
-
-        self.listbox = Listbox(self.root)
-        self.listbox.pack(side=LEFT, fill=BOTH, expand=True, pady=(15, 0))
-
-        self.scrollbar = Scrollbar(self.root)
-        self.scrollbar.pack(side=RIGHT, fill=Y, pady=(15, 0))
-
-        self.listbox.config(yscrollcommand=self.scrollbar.set)
-        self.scrollbar.config(command=self.listbox.yview)
-
-    def updateList(self, data):
-        self.listbox.delete(0, END)
-        for item in data:
-            row = f"{item[0]: ^3} {item[1]: <10} {item[2]: <10} {item[3]: <10} {item[4]: ^3}"
-            print(row)
-            self.listbox.insert(END, row)
+        # root.bind('<FocusIn>', self.onWindowsFocusIn)
+        # root.bind('<FocusOut>', self.on_focus_out)
 
     def searchBook(self, event):
         temp = event.widget.get()
         books = self.db.searchBook(temp)
         self.updateTree(books)
+        self.tree.forget()
 
     def getAllBooks(self):
         self.updateTree(self.db.getAllBooks())
 
-    def initGui2(self):
+    def initGui(self):
         self.root.title("new book")
         self.root.configure(padx=20, pady=20)
 
-        self.searchEntry = ttk.Entry(self.root, justify="right")
+        self.searchEntry = ttk.Entry(self.root, justify="right", foreground="gray")
         self.searchEntry.pack(fill="x")
         self.searchEntry.bind('<KeyRelease>', self.searchBook)
-        self.searchEntry.focus_set()
+        # self.searchEntry.focus_set()
+        self.searchEntry.insert(0, 'جستجو در کتاب ها')
+        self.searchEntry.bind('<FocusIn>', self.on_entry_click)
+        self.searchEntry.bind('<FocusOut>', self.on_focus_out)
 
         self.tree = ttk.Treeview(self.root)
         self.tree.pack(side=LEFT, fill=BOTH, expand=True, pady=(15, 0))
@@ -87,12 +69,15 @@ class Report:
 
     def onTreeItemClick(self, event):
         treeItem = event.widget.item(event.widget.focus())
-        editBook = Toplevel()
-        newBookPage.NewBookPage(editBook, self.db).edit(treeItem["text"],self.refreshTree())
+        editBook = Toplevel(self.root)
+        newBookPage.NewBookPage(editBook, self.db).edit(treeItem["text"])
+        # editBook.protocol("WM_DELETE_WINDOW", lambda: self.refreshTree())
         return treeItem
 
     def refreshTree(self):
         self.updateTree(self.db.getAllBooks())
+        # topLevel.destroy()
+        # print(topLevel)
 
     def sort_treeview(self, column, descending=False):
 
@@ -112,3 +97,22 @@ class Report:
 
         # Switch the sorting order for the next click
         self.tree.heading(column, command=lambda: self.sort_treeview(column, not descending))
+
+    def on_entry_click(self, event):
+        if self.searchEntry.get() == 'جستجو در کتاب ها':
+            self.searchEntry.delete(0, END)  # Clear the placeholder text
+            self.searchEntry.config(foreground='black')  # Change the text color to black
+
+    def on_focus_out(self, event):
+        if self.searchEntry.get() == '':
+            self.searchEntry.insert(0, 'جستجو در کتاب ها')
+            self.searchEntry.config(foreground='gray')  # Change the text color to gray
+
+    def onWindowsFocusIn(self, event):
+        # time.sleep(3)
+        # self.refreshTree()
+        print("focus in")
+
+    def onWindowsFocusOut(self, event):
+        # self.refreshTree()
+        print("focus out")
