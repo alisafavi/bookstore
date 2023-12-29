@@ -8,9 +8,6 @@ DB_NAME = "books.db"
 __connection = None
 __cursor = None
 
-print("ddd")
-
-
 def __connect():
     global __connection
     global __cursor

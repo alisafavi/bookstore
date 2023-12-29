@@ -85,9 +85,6 @@ from models import Book
 #             conn.close()
 
 
-x = 0
-
-
 class Database:
     def __init__(self, db_name):
         self.db_name = db_name
@@ -96,9 +93,6 @@ class Database:
 
         self.__createTable()
         self.__connect()
-        global x
-        x += 1
-        print(x)
 
     def __del__(self):
         self.__disconnect()
@@ -170,15 +164,14 @@ class Database:
             return False
 
     def __createTable(self):
-        query = '''
-            CREATE TABLE IF NOT EXISTS books (
-                id INTEGER PRIMARY autoincrement,
-                title TEXT,
-                author TEXT,
-                price INTEGER,
-                quantity INTEGER
-            )
-        '''
+
+        query = ("CREATE TABLE IF NOT EXISTS books"
+                 "(id INTEGER PRIMARY key autoincrement,"
+                 "title TEXT,"
+                 "author TEXT,"
+                 "price INTEGER not null ,"
+                 "quantity INTEGER not null)")
+
         self.__execute_query(query)
 
     def getBookById(self, id):
@@ -201,3 +194,7 @@ class Database:
     def insertBook(self, book: Book):
         self.__execute_query("INSERT INTO books VALUES (NULL,?,?,?,?)",
                              (book.title, book.author, book.price, book.quantity))
+
+    def deleteBook(self,bookId):
+        query = "DELETE FROM books WHERE id =?"
+        return self.__execute_query(query,bookId)

@@ -87,7 +87,6 @@ class Report:
 
     def onTreeItemClick(self, event):
         treeItem = event.widget.item(event.widget.focus())
-        print(treeItem)
         editBook = Toplevel()
         newBookPage.NewBookPage(editBook, self.db).edit(treeItem["text"],self.refreshTree())
         return treeItem

@@ -1,10 +1,9 @@
-from tkinter import *
 import tkinter.ttk as ttk
-from models import Book
-import utils
-import test
+from tkinter import *
 import database
-import database2 as db
+import utils
+from models import Book
+
 
 class NewBookPage:
     def __init__(self, root, db: database.Database):
@@ -19,14 +18,13 @@ class NewBookPage:
 
         # region ui
 
-        self.bookNameVar= StringVar()
-        self.bookPriceVar= StringVar()
-        self.bookAuthorVar= StringVar()
-        self.bookQuantityVar= StringVar()
-
+        self.bookNameVar = StringVar()
+        self.bookPriceVar = StringVar()
+        self.bookAuthorVar = StringVar()
+        self.bookQuantityVar = StringVar()
 
         Label(self.root, text="name").grid(row=0, column=0, pady=5, sticky="w")
-        self.bookNameEntry = Entry(self.root,textvariable=self.bookNameVar)
+        self.bookNameEntry = Entry(self.root, textvariable=self.bookNameVar)
         self.bookNameEntry.grid(row=0, column=1, pady=5)
         self.bookNameEntry.focus_set()
 
@@ -42,11 +40,11 @@ class NewBookPage:
         self.bookPriceEntry.bind("<KeyRelease>", lambda event, *args: utils.labelDecimalFormat(self.bookPriceVar, pl))
 
         Label(self.root, text="quantity").grid(row=3, column=0, pady=5, sticky="w")
-        self.bookQuantityEntry = Entry(self.root,textvariable=self.bookQuantityVar)
+        self.bookQuantityEntry = Entry(self.root, textvariable=self.bookQuantityVar)
         self.bookQuantityEntry.grid(row=3, column=1, pady=5, padx=5)
 
         Label(self.root, text="author").grid(row=4, column=0, pady=5, sticky="w")
-        self.bookAuthorEntry = Entry(self.root,textvariable=self.bookAuthorVar)
+        self.bookAuthorEntry = Entry(self.root, textvariable=self.bookAuthorVar)
         self.bookAuthorEntry.grid(row=4, column=1, pady=5, padx=5)
 
         self.sumbit = ttk.Button(self.root, text="save", command=self.__registerBook)
@@ -54,9 +52,9 @@ class NewBookPage:
 
         # endregion
 
-    def __registerBook(self,bookId=None):
+    def __registerBook(self, bookId=None):
         book = Book(self.bookNameEntry.get(), self.bookAuthorEntry.get(), self.bookPriceEntry.get(),
-                       self.bookQuantityEntry.get(),bookId)
+                    self.bookQuantityEntry.get(), bookId)
         if bookId:
             self.db.updateBook(book)
         else:
@@ -64,11 +62,13 @@ class NewBookPage:
 
         self.root.destroy()
 
-    def edit(self,bookId,callBack):
+    def edit(self, bookId, callBack):
         book = self.db.getBookById(bookId)
         self.bookNameVar.set(book[1])
         self.bookAuthorVar.set(book[2])
         self.bookPriceVar.set(book[3])
         self.bookQuantityVar.set(book[4])
 
-        self.sumbit.config(command=lambda :self.__registerBook(book[0]))
+        self.sumbit.config(text="edit",command=lambda: self.__registerBook(book[0]))
+        self.sumbit.grid(row=5,column=0,columnspan=1)
+        ttk.Button(self.root, text="delete").grid(row=5, column=1,sticky='e',columnspan=1)
