@@ -49,7 +49,23 @@ tree.bind("<ButtonRelease-1>", onTreeItemClick)
 
 # endregion
 
-# region treeview
-"""-----------   treeview    ----------------"""
+`# region matplotlib
+"""-----------   matplotlib    ----------------"""
+import tkinter as tk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+root = tk.Tk()
+
+fig = Figure(figsize=(6, 4))
+ax = fig.add_subplot(111)
+ax.plot([1, 2, 3, 4, 5], [9, 4, 6, 8, 10], marker='o')
+
+# Embed the Matplotlib figure in the Tkinter window
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.draw()
+canvas.get_tk_widget().pack()
+
+root.mainloop()
 
 # endregion
